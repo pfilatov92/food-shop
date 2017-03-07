@@ -1,0 +1,39 @@
+{
+    "port": 3000,
+    "mongoUri": "mongodb://localhost:27017/food-shop",
+    "session": {
+        "secret": "f00d5h0p",
+        "key": "sid",
+        "coockie": {
+            "path": "/",
+            "httpOnly": true,
+            "maxAge": null
+        }
+    },
+    "products": [
+        {
+            "id": 1, 
+            "name": "Milk", 
+            "description": "Tasty milk", 
+            "price": 5
+        },
+        {
+            "id": 2, 
+            "name": "Bread", 
+            "description": "The best bread in the world", 
+            "price": 10
+        },
+        {
+            "id": 3, 
+            "name": "Meat", 
+            "description": "Beef meet, 1 kilo", 
+            "price": 20
+        },
+        {
+            "id": 4, 
+            "name": "Apple", 
+            "description": "Apples from Poland", 
+            "price": 1
+        }
+    ]
+}
