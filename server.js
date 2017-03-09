@@ -6,7 +6,7 @@ var mongoose   = require('./lib/mongoose');
 var config = require('./config/config');
 var app = express();
 var sessions = require('express-session');
-var MongoStore = require('connect-mongostore')(sessions);
+var MongoStore = require('connect-mongo')(sessions);
 
 app.set('port', process.env.PORT || config.get('port'))
 
