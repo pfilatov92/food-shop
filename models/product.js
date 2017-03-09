@@ -8,6 +8,12 @@ var ProductSchema = new Schema({
     price: Number
 });
 
+ProductSchema.statics.getProduct = (productId, callback) => {
+    Product.findOne({id: productId}, (err, product) => {
+        callback(err, product);
+    });
+}
+
 ProductSchema.statics.getProducts = (callback) => {
     Product.find({}, (err, products) => {
         callback(err, products)

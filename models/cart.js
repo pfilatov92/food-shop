@@ -1,5 +1,6 @@
 var mongoose = require('../lib/mongoose');
 var Schema = mongoose.Schema;
+var Product = require('./product');
 
 var CartSchema = new Schema({
     sessionId: String,
@@ -25,26 +26,34 @@ CartSchema.statics.getCart = (sessionId, callback) => {
         if (prevTimer) 
             clearTimeout(prevTimer);
         
-        deleteTimers[sessionId] = setTimeout(() => { Cart.deleteCart(sessionId)}, 30000);
+        deleteTimers[sessionId] = setTimeout(() => { Cart.deleteCart(sessionId)}, 30000);//change to 300000
         callback(err, cart);
     });
 } 
 
 CartSchema.statics.addToCart = (sessionId, productId, quantity, callback) => {
-    Cart.getCart(sessionId, (err, cart) => {
+    Product.getProduct(productId, (err, product) => {
         if (err)
             return callback(err);
 
-        let item = cart.cartItems.find(i => i.productId == productId);
-        if (!item) {
-            cart.cartItems.push({
-                productId,
-                quantity: quantity
-            });
-        }
-        else item.quantity = item.quantity + quantity;
+        if (!product)
+            return callback(`No such product with product_id: ${productId}`);
+        
+        Cart.getCart(sessionId, (err, cart) => {
+            if (err)
+                return callback(err);
 
-        cart.save(callback(err, cart));
+            let item = cart.cartItems.find(i => i.productId == productId);
+            if (!item) {
+                cart.cartItems.push({
+                    productId,
+                    quantity: quantity
+                });
+            }
+            else item.quantity = item.quantity + quantity;
+
+            cart.save(callback(err, "a"));
+        });
     });
 }
 
@@ -58,7 +67,7 @@ CartSchema.statics.deleteFromCart = (sessionId, productId, callback) => {
             if (cart.cartItems[itemInd].quantity == 1)
                 cart.cartItems.splice(itemInd, 1);
             else cart.cartItems[itemInd].quantity--;
-        }
+        } else return callback(`No such product in cart with product_id: ${productId}`);
 
         cart.save(callback(err, cart));
     });
