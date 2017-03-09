@@ -13,12 +13,12 @@ router.post('/', (req, res) => {
                         Validators.isIntParam('quantity', quantity) ||
                         Validators.isInRangeParam('quantity', quantity, 1, 10)
     if (validationErr)
-        res.status(400).json(validationErr);
+        return res.status(400).json(validationErr);
     Cart.addToCart(req.sessionID, productId, Number(quantity), (err, result) => {
         if (err) 
             return res.status(500).json(Errors.createInternalServerError(err));
 
-        res.json({ data: result}); 
+        return res.json({}); 
     });
 });
 
@@ -26,12 +26,12 @@ router.delete('/', (req, res) => {
   const productId = req.body.product_id;
   let validationErr = Validators.isRequiredParam('product_id', productId);
   if (validationErr)
-        res.status(400).json(validationErr);
+        return res.status(400).json(validationErr);
   Cart.deleteFromCart(req.sessionID, productId, (err, result) => {
     if (err) 
       return res.status(500).json(Errors.createInternalServerError(err));
 
-    res.json({ data: result}); 
+    return res.json({ data: result}); 
   });
 });
 
@@ -51,10 +51,12 @@ router.get('/', (req, res) => {
         total_sum += prodObj.price * product.quantity;
         products_count += product.quantity
       });
-      res.json({
-        total_sum,
-        products_count,
-        data: result.cartItems
+      return res.json({
+        data: {
+          total_sum,
+          products_count,
+          products: result.cartItems
+        }
       });
     }); 
   });      

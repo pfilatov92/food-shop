@@ -52,7 +52,7 @@ CartSchema.statics.addToCart = (sessionId, productId, quantity, callback) => {
             }
             else item.quantity = item.quantity + quantity;
 
-            cart.save(callback(err, "a"));
+            cart.save(callback(err, cart));
         });
     });
 }

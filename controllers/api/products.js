@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
     if (err)
       return res.status(500).json(Errors.createInternalServerError(err));;
 
-    res.json({ data: result });
+    return res.json({ data: result });
   });  
 });
 

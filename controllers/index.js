@@ -10,7 +10,7 @@ router.use('/api/products', require('./api/products'));
 router.use('/api/cart', require('./api/cart'));
 
 router.use("*", (req, res) => {
-    res.status(404).json(Errors.createInvalidRequestError(req.originalUrl));
+    return res.status(404).json(Errors.createInvalidRequestError(req.originalUrl));
 })
 
 module.exports = router;
