@@ -1,6 +1,8 @@
+var _ = require('lodash');
 var mongoose = require('../lib/mongoose');
 var Schema = mongoose.Schema;
 var Product = require('./product');
+var config = require('../config/config');
 
 var CartSchema = new Schema({
     sessionId: String,
@@ -9,13 +11,6 @@ var CartSchema = new Schema({
         quantity: Number
     }]
 });
-
-var deleteTimers = {};
-
-CartSchema.statics.deleteCart = (sessionId) => {
-    Cart.remove({sessionId: sessionId}).exec();
-    deleteTimers[sessionId] = null;
-}
 
 CartSchema.statics.getCart = (sessionId, callback) => {
     Cart.findOne({sessionId: sessionId}, (err, cart) => {
@@ -26,7 +21,7 @@ CartSchema.statics.getCart = (sessionId, callback) => {
         if (prevTimer) 
             clearTimeout(prevTimer);
         
-        deleteTimers[sessionId] = setTimeout(() => { Cart.deleteCart(sessionId)}, 30000);//change to 300000
+        Cart.setDeleteTimer(cart.sessionId);
         callback(err, cart);
     });
 } 
@@ -71,6 +66,30 @@ CartSchema.statics.deleteFromCart = (sessionId, productId, callback) => {
 
         cart.save(callback(err, cart));
     });
+}
+
+var deleteTimers = {};
+
+CartSchema.statics.setDeleteTimers = () => {
+    Cart.find({}, (err, carts) => { 
+        _.forEach(carts, c => {
+            Cart.setDeleteTimer(c.sessionId);
+        });
+    });
+}
+
+CartSchema.statics.setDeleteTimer = (sessionId) => {
+    deleteTimers[sessionId] = setTimeout(() => { Cart.deleteCart(sessionId) }, config.get('deleteCartTimeout'));
+}
+
+CartSchema.statics.deleteCart = (sessionId) => {
+    Cart.remove({sessionId: sessionId}).exec();
+    deleteTimers[sessionId] = null;
+}
+
+CartSchema.statics.deleteCarts = () => {
+    Cart.remove({}).exec();
+    deleteTimers[sessionId] = null;
 }
 
 var Cart = mongoose.model('Cart', CartSchema);

@@ -1,6 +1,7 @@
 {
     "port": 3000,
     "mongoUri": "mongodb://localhost:27017/food-shop",
+    "deleteCartTimeout": 300000,
     "session": {
         "secret": "f00d5h0p",
         "key": "sid",

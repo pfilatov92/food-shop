@@ -31,7 +31,7 @@ router.delete('/', (req, res) => {
     if (err) 
       return res.status(500).json(Errors.createInternalServerError(err));
 
-    return res.json({ data: result}); 
+    return res.json({}); 
   });
 });
 

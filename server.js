@@ -2,11 +2,12 @@ var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var mongoose   = require('./lib/mongoose');
+var mongoose = require('./lib/mongoose');
 var config = require('./config/config');
 var app = express();
 var sessions = require('express-session');
 var MongoStore = require('connect-mongo')(sessions);
+var Cart = require('./models/cart');
 
 app.set('port', process.env.PORT || config.get('port'))
 
@@ -24,8 +25,12 @@ app.use(sessions({
 app.use('/', require('./controllers'));
 
 http.createServer(app).listen(app.get('port'), function() {
-  //clear old carts?
+  onServerStart();
   console.log('Server is listening on port ' + app.get('port'));
 });
+
+function onServerStart() {
+  Cart.setDeleteTimers();
+}
 
 module.exports = app;
