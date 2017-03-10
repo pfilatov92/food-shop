@@ -1,0 +1,9 @@
+# universal www canonicalization via htaccess
+# require www prefix for all urls of any domain - no editing required
+# https://perishablepress.com/press/2008/04/30/universal-www-canonicalization-via-htaccess/
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} !^www\.               [NC]
+RewriteCond %{HTTP_HOST} ^([^.]+\.[a-z]{2,6})$ [NC]
+RewriteRule ^(.*)$       http://www.%1/$1      [R=301,L]
